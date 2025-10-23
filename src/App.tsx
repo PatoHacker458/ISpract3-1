@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTodos } from './controllers/useToDos';
 import Popup from './components/Popup';
 import type { PopupInfo } from './models/PopupInfo';
