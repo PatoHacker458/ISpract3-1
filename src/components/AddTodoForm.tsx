@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateTodoInput } from '../utils/validation';
 
 interface AddTodoFormProps {
   onAddTodo: (title: string, description: string) => void;
@@ -7,14 +8,18 @@ interface AddTodoFormProps {
 const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [errors, setErrors] = useState<{ titleError?: string, descriptionError?: string } | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim() === '') return;
-    
-    // Llama a la función que viene del padre (App.tsx)
-    onAddTodo(title, description); 
-    
+    const validationErrors = validateTodoInput(title, description);
+
+    if (validationErrors) {
+      // Si hay errores, los guardamos en el estado y detenemos la ejecución
+      setErrors(validationErrors);
+      return; 
+    }
+    setErrors(null);
     setTitle('');
     setDescription('');
   };
@@ -31,7 +36,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                   placeholder="Learn JS"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  maxLength={50}
                 />
+                {errors?.titleError && <small className="text-danger ml-sm-2">{errors.titleError}</small>}
               </div>
 
               <div className="px-sm-2 col-sm-7 d-sm-flex align-items-center mt-2 mt-sm-0">
@@ -43,7 +50,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                   placeholder="Watch JS Tutorials"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  maxLength={200}
                 />
+                {errors?.descriptionError && <small className="text-danger ml-sm-2">{errors.descriptionError}</small>}
               </div>
 
               <div className="col-sm-2 d-sm-flex justify-content-end mt-4 mt-sm-0">

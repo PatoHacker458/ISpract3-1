@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Todo } from '../models/ToDo';
+import { validateTodoInput } from '../utils/validation';
 
 interface EditTodoModalProps {
     todo: Todo; 
@@ -11,14 +12,21 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onClose, onSave }) 
     // Estado local para los campos del formulario
     const [newTitle, setNewTitle] = useState(todo.title); 
     const [description, setDescription] = useState(todo.description);
+    const [errors, setErrors] = useState<{ titleError?: string, descriptionError?: string } | null>(null);
 
     const originalTitle = todo.title; 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newTitle.trim() === '' || description.trim() === '') return;
+        const validationErrors = validateTodoInput(newTitle, description);
+        if (validationErrors) {
+          // Si hay errores, los guardamos y detenemos
+          setErrors(validationErrors);
+          return;
+        }
+        setErrors(null);
         onSave(originalTitle, newTitle, description);
-        onClose(); 
+        onClose();
 };
 
   
