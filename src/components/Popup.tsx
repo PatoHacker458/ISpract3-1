@@ -1,8 +1,7 @@
+import type { PopupInfo } from '../models/PopupInfo';
 import React from 'react';
 
-interface PopupProps {
-  title: string;
-  message: string;
+interface PopupProps extends PopupInfo{
   onClose: () => void;
 }
 
