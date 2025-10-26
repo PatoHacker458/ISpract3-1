@@ -42,6 +42,7 @@ return (
             onChange={(e) => setNewTitle(e.target.value)} 
             className="form-control mb-3"
           />
+          {errors?.titleError && <small className="text-danger ml-sm-2">{errors.titleError}</small>}
 
           <label>Descripción</label>
           <input 
@@ -50,6 +51,7 @@ return (
             onChange={(e) => setDescription(e.target.value)} 
             className="form-control mb-3"
           />
+          {errors?.titleError && <small className="text-danger ml-sm-2">{errors.titleError}</small>}
 
           <div className="d-flex justify-content-end">
             <button type="button" className="btn btn-secondary mr-2" onClick={onClose}>

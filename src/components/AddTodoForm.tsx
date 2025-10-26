@@ -19,7 +19,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
       setErrors(validationErrors);
       return; 
     }
+
     setErrors(null);
+    onAddTodo(title, description); 
     setTitle('');
     setDescription('');
   };
