@@ -20,6 +20,7 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
       return; 
     }
     setErrors(null);
+    onAddTodo(title, description); 
     setTitle('');
     setDescription('');
   };

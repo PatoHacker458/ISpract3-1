@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
 
@@ -6,21 +6,24 @@ export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const previousTodosRef = useRef<Todo[]>([]);
+    const [isRollingBack, setIsRollingBack] = useState(false);
 
     // --- 1. LECTURA ---
     useEffect(() => {
         const loadData = async () => {
-        try {
-            setError(null);
-            setIsLoading(true);
-            const initialTodos = await fetchTodos();
-            setTodos(initialTodos);
-        } catch (e) {
-            console.error("Error al cargar la lista de tareas:", e);
-            setError("No se pudieron cargar las tareas desde el servidor.");
-        } finally {
-            setIsLoading(false);
-        }
+            try {
+                setError(null);
+                setIsLoading(true);
+                const initialTodos = await fetchTodos();
+                setTodos(initialTodos);
+                previousTodosRef.current = initialTodos;
+            } catch (e) {
+                console.error("Error al cargar la lista de tareas:", e);
+                setError("No se pudieron cargar las tareas desde el servidor.");
+            } finally {
+                setIsLoading(false);
+            }
         };
         
         loadData();
@@ -28,13 +31,24 @@ export const useTodos = () => {
 
     // --- 2. PERSISTENCIA  ---
     useEffect(() => {
+        if (isRollingBack) {
+            setIsRollingBack(false); 
+            return; 
+        }
+
         if (!isLoading) {
+            const todosToSave = todos;
+            const previousTodos = previousTodosRef.current;
+
             const delaySave = setTimeout(async () => {
                 try {
                     setError(null); 
                     await saveTodos(todos); 
+                    previousTodosRef.current = todosToSave;
                 } catch (e) {
                     const errorMessage = e instanceof Error ? e.message : "Error desconocido de persistencia.";
+                    setIsRollingBack(true);
+                    setTodos(previousTodos);
                     setError(errorMessage); 
                 }
             }, 500); 
