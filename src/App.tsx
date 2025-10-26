@@ -8,9 +8,10 @@ import AddTodoForm from './components/AddTodoForm';
 import TodoList from './components/TodoList';
 import EditTodoModal from './components/EditTodoModal'; 
 import SearchBar from './components/SearchBar';
+import StatusButton from './components/StatusButton';
 
 function App() {
-  const { todos, addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error, searchTerm, setSearchTerm, filteredTodos } = useTodos();
+  const { todos, addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error, searchTerm, setSearchTerm, filteredTodos,filterStatus, setFilterStatus } = useTodos();
   const [popup, setPopup] = useState<PopupInfo | null>(null); 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
@@ -30,7 +31,6 @@ function App() {
   if (isLoading) {
     return <div>Cargando tareas...</div>;
   }
-
 
   // JSX
   return (
@@ -57,6 +57,27 @@ function App() {
               searchTerm={searchTerm} 
               onSearchChange={setSearchTerm} // Conecta el input al setSearchTerm del hook
             />
+
+            <div className="flex flex-wrap gap-3 mb-4 justify-start">
+            <StatusButton 
+              status="all" 
+              label="Todas"
+              filterStatus={filterStatus}
+              setFilterStatus={setFilterStatus}
+            />
+            <StatusButton 
+              status="pending" 
+              label="Pendientes"
+              filterStatus={filterStatus}
+              setFilterStatus={setFilterStatus}
+            />
+            <StatusButton 
+              status="completed" 
+              label="Completadas"
+              filterStatus={filterStatus}
+              setFilterStatus={setFilterStatus}
+            />
+          </div>
 
             {/* Criterio 4: Mensaje de no coincidencias */}
             {filteredTodos.length === 0 && searchTerm.trim() !== '' && (

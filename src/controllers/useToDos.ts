@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
-import { filterTodosByTitle } from '../utils/todoFilters';
+
+type FilterStatus = 'all' | 'pending' | 'completed';
 
 export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
     // --- 1. LECTURA (R: Read) ---
     // Este useEffect se encarga de la carga inicial (fetchTodos)
@@ -47,18 +49,30 @@ export const useTodos = () => {
         }
     }, [todos, isLoading]);
 
-    // LÓGICA DE FILTRADO
+    // LÓGICA DE FILTRADO COMBINADO
     const filteredTodos = useMemo(() => {
-        const trimmedTerm = searchTerm.trim().toLowerCase();
-        //si no hay nada la busqueda, aparecen todos
-        if (!trimmedTerm) { 
-            return todos;
+        
+        let result = todos;
+
+        //Filtro por status
+        if (filterStatus !== 'all') {
+            const isCompleted = filterStatus === 'completed';
+            result = result.filter(todo => todo.completed === isCompleted);
         }
-        //filtra por titulo
-        return todos.filter(todo => 
-            todo.title.toLowerCase().includes(trimmedTerm)
-        );
-    }, [todos, searchTerm]);
+        
+        //Filtro por titulo
+        const trimmedTerm = searchTerm.trim().toLowerCase();
+        
+        //Aplicamos el filtro de búsqueda si hay un término válido
+        if (trimmedTerm) { 
+            result = result.filter(todo => 
+                todo.title.toLowerCase().includes(trimmedTerm)
+            );
+        }
+
+        return result;
+        
+    }, [todos, searchTerm, filterStatus]);
 
 
     // --- 3. CREACIÓN (C: Create) ---
@@ -117,5 +131,7 @@ export const useTodos = () => {
         searchTerm,        
         setSearchTerm,     
         filteredTodos,
+        filterStatus,
+        setFilterStatus
     };
 };
