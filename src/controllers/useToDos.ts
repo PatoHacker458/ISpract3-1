@@ -1,11 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
+
+type FilterStatus = 'all' | 'pending' | 'completed';
 
 export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
     // --- 1. LECTURA (R: Read) ---
     // Este useEffect se encarga de la carga inicial (fetchTodos)
@@ -45,13 +49,39 @@ export const useTodos = () => {
         }
     }, [todos, isLoading]);
 
+    // LÓGICA DE FILTRADO COMBINADO
+    const filteredTodos = useMemo(() => {
+        
+        let result = todos;
+
+        //Filtro por status
+        if (filterStatus !== 'all') {
+            const isCompleted = filterStatus === 'completed';
+            result = result.filter(todo => todo.completed === isCompleted);
+        }
+        
+        //Filtro por titulo
+        const trimmedTerm = searchTerm.trim().toLowerCase();
+        
+        //Aplicamos el filtro de búsqueda si hay un término válido
+        if (trimmedTerm) { 
+            result = result.filter(todo => 
+                todo.title.toLowerCase().includes(trimmedTerm)
+            );
+        }
+
+        return result;
+        
+    }, [todos, searchTerm, filterStatus]);
+
 
     // --- 3. CREACIÓN (C: Create) ---
-    const addTodo = (title: string, description: string): void => {
+    const addTodo = (title: string, description: string, dueDate: string): void => {
         const newTodo: Todo = {
         title, 
         description,
         completed: false,
+        dueDate,
         };
         // 1. Actualiza el estado de React
         setTodos((prev) => [...prev, newTodo]);
@@ -59,14 +89,15 @@ export const useTodos = () => {
     };
 
     // --- 4. ACTUALIZACIÓN (U: Update - Toggle Complete) ---
-    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string): void => {
+    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string, newDueDate: string): void => {
         setTodos((prev) =>
             prev.map((todo) => {
                 if (todo.title === originalTitle) {
                     return { 
                         ...todo, 
                         title: newTitle, 
-                        description: newDescription 
+                        description: newDescription,
+                        dueDate: newDueDate,
                     };
                 }
                 return todo;
@@ -96,6 +127,11 @@ export const useTodos = () => {
         updateTodo,
         toggleTodo, 
         deleteTodo, 
-        error
+        error,
+        searchTerm,        
+        setSearchTerm,     
+        filteredTodos,
+        filterStatus,
+        setFilterStatus
     };
 };
