@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
 
 interface AddTodoFormProps {
-  onAddTodo: (title: string, description: string) => void;
+  onAddTodo: (title: string, description: string, dueDate: string) => void;
 }
 
+const getMinDate = (): string => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
+  const minDate = getMinDate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [dueDate, setDueDate] = useState(minDate);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim() === '') return;
+    if (title.trim() === '' || dueDate.trim() === '') return;//FALTA AQUI LO DE DESCRIOPCION O NO SE COMO MANEJEMOS ESO
+
+    // fehca debe ser mayor a la del dia en curso
+    if (new Date(dueDate) < new Date(minDate)) {// QUI VALIDACION QUIJANO
+        alert('La fecha de vencimiento debe ser igual o posterior a la fecha actual.');
+        setDueDate(minDate); 
+        return;
+    }
     
     // Llama a la función que viene del padre (App.tsx)
-    onAddTodo(title, description); 
+    onAddTodo(title, description, dueDate); 
     
     setTitle('');
     setDescription('');
+    setDueDate(minDate);
   };
-
+ 
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">
@@ -43,6 +61,18 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                   placeholder="Watch JS Tutorials"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="col-sm-3 d-sm-flex align-items-center mt-2 mt-sm-0">
+                <label htmlFor="dueDate" className="m-sm-0">Due Date</label>
+                <input
+                  type="date"
+                  id="dueDate"
+                  className="form-control ml-sm-2"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  min={minDate} // Impide seleccionar visualmente fechas pasadas
                 />
               </div>
 
