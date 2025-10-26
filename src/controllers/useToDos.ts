@@ -47,11 +47,12 @@ export const useTodos = () => {
 
 
     // --- 3. CREACIÓN (C: Create) ---
-    const addTodo = (title: string, description: string): void => {
+    const addTodo = (title: string, description: string, dueDate: string): void => {
         const newTodo: Todo = {
         title, 
         description,
         completed: false,
+        dueDate,
         };
         // 1. Actualiza el estado de React
         setTodos((prev) => [...prev, newTodo]);
@@ -59,14 +60,15 @@ export const useTodos = () => {
     };
 
     // --- 4. ACTUALIZACIÓN (U: Update - Toggle Complete) ---
-    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string): void => {
+    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string, newDueDate: string): void => {
         setTodos((prev) =>
             prev.map((todo) => {
                 if (todo.title === originalTitle) {
                     return { 
                         ...todo, 
                         title: newTitle, 
-                        description: newDescription 
+                        description: newDescription,
+                        dueDate: newDueDate,
                     };
                 }
                 return todo;

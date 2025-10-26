@@ -22,8 +22,8 @@ function App() {
     }
   }, [error]);
 
-  const handleAdd = (title: string, description: string) => {
-      addTodo(title, description); 
+  const handleAdd = (title: string, description: string, dueDate: string) => {
+      addTodo(title, description, dueDate); 
   };
 
   if (isLoading) {

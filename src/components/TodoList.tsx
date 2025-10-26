@@ -16,6 +16,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onToggleComplete, onDelete, 
             <tr>
                 <th scope="col">Todo</th>
                 <th scope="col">Description</th>
+                <th scope="col">Due Date</th>
                 <th scope="col"><div className="d-flex justify-content-center">Completed</div></th>
                 <th scope="col"></th>
             </tr>
