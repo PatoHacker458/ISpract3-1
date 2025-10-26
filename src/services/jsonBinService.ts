@@ -28,7 +28,7 @@ export const saveTodos = async (todos: Todo[]): Promise<void> => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'X-Master-Key': "SECRET_KEY",
+            'X-Master-Key': SECRET_KEY,
         },
         body: JSON.stringify(todos),
     });
