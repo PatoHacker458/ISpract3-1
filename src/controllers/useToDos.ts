@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
+
+type FilterStatus = 'all' | 'pending' | 'completed';
 
 export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -8,6 +10,8 @@ export const useTodos = () => {
     const [error, setError] = useState<string | null>(null);
     const previousTodosRef = useRef<Todo[]>([]);
     const [isRollingBack, setIsRollingBack] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
     // --- 1. LECTURA ---
     useEffect(() => {
@@ -57,27 +61,54 @@ export const useTodos = () => {
         }
     }, [todos, isLoading]);
 
+    // LÓGICA DE FILTRADO COMBINADO
+    const filteredTodos = useMemo(() => {
+        
+        let result = todos;
+
+        //Filtro por status
+        if (filterStatus !== 'all') {
+            const isCompleted = filterStatus === 'completed';
+            result = result.filter(todo => todo.completed === isCompleted);
+        }
+        
+        //Filtro por titulo
+        const trimmedTerm = searchTerm.trim().toLowerCase();
+        
+        //Aplicamos el filtro de búsqueda si hay un término válido
+        if (trimmedTerm) { 
+            result = result.filter(todo => 
+                todo.title.toLowerCase().includes(trimmedTerm)
+            );
+        }
+
+        return result;
+        
+    }, [todos, searchTerm, filterStatus]);
+
 
     // --- 3. CREACIÓN ---
-    const addTodo = (title: string, description: string): void => {
+    const addTodo = (title: string, description: string, dueDate: string): void => {
         const newTodo: Todo = {
-            title, 
-            description,
-            completed: false,
+        title, 
+        description,
+        completed: false,
+        dueDate,
         };
         setTodos((prev) => [...prev, newTodo]);
         setError(null);
     };
 
     // --- 4. ACTUALIZACIÓN  ---
-    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string): void => {
+    const updateTodo = (originalTitle: string, newTitle: string, newDescription: string, newDueDate: string): void => {
         setTodos((prev) =>
             prev.map((todo) => {
                 if (todo.title === originalTitle) {
                     return { 
                         ...todo, 
                         title: newTitle, 
-                        description: newDescription 
+                        description: newDescription,
+                        dueDate: newDueDate,
                     };
                 }
                 return todo;
@@ -105,6 +136,11 @@ export const useTodos = () => {
         updateTodo,
         toggleTodo, 
         deleteTodo, 
-        error
+        error,
+        searchTerm,        
+        setSearchTerm,     
+        filteredTodos,
+        filterStatus,
+        setFilterStatus
     };
 };

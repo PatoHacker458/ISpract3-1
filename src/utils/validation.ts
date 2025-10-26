@@ -9,6 +9,7 @@ const ERROR_MESSAGES = {
   TITLE_LIMIT: `El título no puede exceder los ${TITLE_MAX_LENGTH} caracteres.`,
   DESC_LIMIT: `La descripción no puede exceder los ${DESC_MAX_LENGTH} caracteres.`,
   EMPTY_TITLE: 'El título no puede estar vacío.',
+  EMPTY_DESC: 'La descripción no puede estar vacía.'
 };
 
 // Interface para el objeto de errores
@@ -29,6 +30,11 @@ export const validateTodoInput = (title: string, description: string): Validatio
   if (title.trim() === '') {
     errors.titleError = ERROR_MESSAGES.EMPTY_TITLE;
   } 
+
+  if (description.trim() === '') {
+    errors.descriptionError = ERROR_MESSAGES.EMPTY_DESC;
+  } 
+
   // Luego validamos la longitud del título
   else if (title.length > TITLE_MAX_LENGTH) {
     errors.titleError = ERROR_MESSAGES.TITLE_LIMIT;
