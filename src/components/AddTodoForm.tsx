@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateTodoInput } from '../utils/validation';
 
 interface AddTodoFormProps {
   onAddTodo: (title: string, description: string, dueDate: string) => void;
@@ -16,22 +17,27 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
   const minDate = getMinDate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [errors, setErrors] = useState<{ titleError?: string, descriptionError?: string } | null>(null);
   const [dueDate, setDueDate] = useState(minDate);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim() === '' || dueDate.trim() === '') return;//FALTA AQUI LO DE DESCRIOPCION O NO SE COMO MANEJEMOS ESO
+    const validationErrors = validateTodoInput(title, description);
 
-    // fehca debe ser mayor a la del dia en curso
+    if (validationErrors) {
+      // Si hay errores, los guardamos en el estado y detenemos la ejecución
+      setErrors(validationErrors);
+      return; 
+    }
+    
     if (new Date(dueDate) < new Date(minDate)) {// QUI VALIDACION QUIJANO
         alert('La fecha de vencimiento debe ser igual o posterior a la fecha actual.');
         setDueDate(minDate); 
         return;
     }
-    
-    // Llama a la función que viene del padre (App.tsx)
+
+    setErrors(null);
     onAddTodo(title, description, dueDate); 
-    
     setTitle('');
     setDescription('');
     setDueDate(minDate);
@@ -49,7 +55,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                   placeholder="Learn JS"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  maxLength={50}
                 />
+                {errors?.titleError && <small className="text-danger ml-sm-2">{errors.titleError}</small>}
               </div>
 
               <div className="px-sm-2 col-sm-7 d-sm-flex align-items-center mt-2 mt-sm-0">
@@ -61,7 +69,9 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
                   placeholder="Watch JS Tutorials"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  maxLength={200}
                 />
+                {errors?.descriptionError && <small className="text-danger ml-sm-2">{errors.descriptionError}</small>}
               </div>
 
               <div className="col-sm-3 d-sm-flex align-items-center mt-2 mt-sm-0">
