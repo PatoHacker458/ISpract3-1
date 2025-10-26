@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
 
@@ -8,42 +8,54 @@ export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const previousTodosRef = useRef<Todo[]>([]);
+    const [isRollingBack, setIsRollingBack] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
-    // --- 1. LECTURA (R: Read) ---
-    // Este useEffect se encarga de la carga inicial (fetchTodos)
+    // --- 1. LECTURA ---
     useEffect(() => {
         const loadData = async () => {
-        try {
-            setError(null);
-            setIsLoading(true);
-            // Llama al servicio para obtener los datos
-            const initialTodos = await fetchTodos();
-            setTodos(initialTodos);
-        } catch (e) {
-            console.error("Error al cargar la lista de tareas:", e);
-            setError("No se pudieron cargar las tareas desde el servidor.");
-        } finally {
-            setIsLoading(false);
-        }
+            try {
+                setError(null);
+                setIsLoading(true);
+                const initialTodos = await fetchTodos();
+                setTodos(initialTodos);
+                previousTodosRef.current = initialTodos;
+            } catch (e) {
+                console.error("Error al cargar la lista de tareas:", e);
+                setError("No se pudieron cargar las tareas desde el servidor.");
+            } finally {
+                setIsLoading(false);
+            }
         };
         
         loadData();
     }, []);
 
-    // --- 2. PERSISTENCIA (PUT para guardar) ---
+    // --- 2. PERSISTENCIA  ---
     useEffect(() => {
+        if (isRollingBack) {
+            setIsRollingBack(false); 
+            return; 
+        }
+
         if (!isLoading) {
-        const delaySave = setTimeout(async () => {
-            try {
-                setError(null); 
-                await saveTodos(todos); 
-            } catch (e) {
-                const errorMessage = e instanceof Error ? e.message : "Error desconocido de persistencia.";
-                setError(errorMessage); 
-            }
-        }, 500); 
+            const todosToSave = todos;
+            const previousTodos = previousTodosRef.current;
+
+            const delaySave = setTimeout(async () => {
+                try {
+                    setError(null); 
+                    await saveTodos(todos); 
+                    previousTodosRef.current = todosToSave;
+                } catch (e) {
+                    const errorMessage = e instanceof Error ? e.message : "Error desconocido de persistencia.";
+                    setIsRollingBack(true);
+                    setTodos(previousTodos);
+                    setError(errorMessage); 
+                }
+            }, 500); 
 
         return () => clearTimeout(delaySave);
         }
@@ -75,7 +87,7 @@ export const useTodos = () => {
     }, [todos, searchTerm, filterStatus]);
 
 
-    // --- 3. CREACIÓN (C: Create) ---
+    // --- 3. CREACIÓN ---
     const addTodo = (title: string, description: string, dueDate: string): void => {
         const newTodo: Todo = {
         title, 
@@ -83,12 +95,11 @@ export const useTodos = () => {
         completed: false,
         dueDate,
         };
-        // 1. Actualiza el estado de React
         setTodos((prev) => [...prev, newTodo]);
-        // 2. El useEffect de persistencia se encarga de llamar a saveTodos.
+        setError(null);
     };
 
-    // --- 4. ACTUALIZACIÓN (U: Update - Toggle Complete) ---
+    // --- 4. ACTUALIZACIÓN  ---
     const updateTodo = (originalTitle: string, newTitle: string, newDescription: string, newDueDate: string): void => {
         setTodos((prev) =>
             prev.map((todo) => {
@@ -106,16 +117,14 @@ export const useTodos = () => {
     };
 
     const toggleTodo = (title: string): void => {
-        // 1. Actualiza el estado de React
         setTodos((prev) =>
-        prev.map((todo) =>
-            todo.title === title ? { ...todo, completed: !todo.completed } : todo
-        )
+            prev.map((todo) =>
+                todo.title === title ? { ...todo, completed: !todo.completed } : todo
+            )
         );
-        // 2. El useEffect de persistencia se encarga de llamar a saveTodos.
     };
 
-    // --- 5. ELIMINACIÓN (D: Delete) ---
+    // --- 5. ELIMINACIÓN  ---
     const deleteTodo = (title: string): void => {
         setTodos((prev) => prev.filter((todo) => todo.title !== title));
     };

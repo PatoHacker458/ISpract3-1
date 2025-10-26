@@ -5,7 +5,7 @@ const Navbar: React.FC<{ title: string }> = ({ title }) => (
     <a className="navbar-brand" href="#">
       {title}
     </a>
-    {/* resto de navbar */}
+    {/* aqui filter ulises */}
   </nav>
 );
 

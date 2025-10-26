@@ -24,7 +24,7 @@ export const fetchTodos = async (): Promise<Todo[]> => {
 };
 
 export const saveTodos = async (todos: Todo[]): Promise<void> => {
-    await fetch(BASE_URL, {
+    const response = await fetch(BASE_URL, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -32,4 +32,8 @@ export const saveTodos = async (todos: Todo[]): Promise<void> => {
         },
         body: JSON.stringify(todos),
     });
+
+    if (!response.ok) {
+        throw new Error('Error al subir las tareas');
+    }
 };

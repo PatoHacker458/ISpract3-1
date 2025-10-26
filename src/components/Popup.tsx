@@ -6,14 +6,38 @@ interface PopupProps extends PopupInfo{
 }
 
 const Popup: React.FC<PopupProps> = ({ title, message, onClose }) => {
+  const handleContainerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="popup-overlay">
-      <div className="popup-container">
-        {}
-        <span className="close-btn" onClick={onClose}>&times;</span>
+    <div 
+        className="popup-overlay" 
+        onClick={onClose}
+        role="alertdialog" 
+        aria-modal="true" 
+    >
+      <div 
+          className="popup-container popup-error" 
+          onClick={handleContainerClick}
+      >
+        <button 
+            className="close-btn" 
+            onClick={onClose}
+            aria-label="Cerrar mensaje de error"
+        >
+            &times;
+        </button>
+        
         <div className="popup-content">
+          <div className="error-icon">⚠️</div> 
+          
           <h2 id="popup-title">{title}</h2>
           <p id="popup-message">{message}</p>
+          
+          <button className="confirm-btn" onClick={onClose}>
+            Entendido
+          </button>
         </div>
       </div>
     </div>

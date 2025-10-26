@@ -8,6 +8,6 @@ export interface Todo {
 export interface TodoListResponse {
   record: Todo[];
   metadata: {
-    // Detalles de la API
+    //poner detalleess apii
   };
 }

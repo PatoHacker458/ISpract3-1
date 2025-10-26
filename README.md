@@ -17,7 +17,6 @@ Esta práctica abarca desde la planeación y el análisis de requisitos (identif
 ---
 
 ## Objetivo
-Aplicar Extreme Programming (XP) mediante un ejemplo en JavaScript para practicar
-trabajo colaborativo, buenas prácticas de ingeniería de software.
+
 
 ---
