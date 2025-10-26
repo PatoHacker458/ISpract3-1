@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Todo } from '../models/ToDo'; 
 import { fetchTodos, saveTodos } from '../services/jsonBinService'; 
+import { filterTodosByTitle } from '../utils/todoFilters';
 
 export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // --- 1. LECTURA (R: Read) ---
     // Este useEffect se encarga de la carga inicial (fetchTodos)
@@ -44,6 +46,19 @@ export const useTodos = () => {
         return () => clearTimeout(delaySave);
         }
     }, [todos, isLoading]);
+
+    // LÓGICA DE FILTRADO
+    const filteredTodos = useMemo(() => {
+        const trimmedTerm = searchTerm.trim().toLowerCase();
+        //si no hay nada la busqueda, aparecen todos
+        if (!trimmedTerm) { 
+            return todos;
+        }
+        //filtra por titulo
+        return todos.filter(todo => 
+            todo.title.toLowerCase().includes(trimmedTerm)
+        );
+    }, [todos, searchTerm]);
 
 
     // --- 3. CREACIÓN (C: Create) ---
@@ -98,6 +113,9 @@ export const useTodos = () => {
         updateTodo,
         toggleTodo, 
         deleteTodo, 
-        error
+        error,
+        searchTerm,        
+        setSearchTerm,     
+        filteredTodos,
     };
 };

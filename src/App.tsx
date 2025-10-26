@@ -7,9 +7,10 @@ import Navbar from './components/Navbar';
 import AddTodoForm from './components/AddTodoForm';
 import TodoList from './components/TodoList';
 import EditTodoModal from './components/EditTodoModal'; 
+import SearchBar from './components/SearchBar';
 
 function App() {
-  const { todos, addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error } = useTodos();
+  const { todos, addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error, searchTerm, setSearchTerm, filteredTodos } = useTodos();
   const [popup, setPopup] = useState<PopupInfo | null>(null); 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
@@ -49,6 +50,21 @@ function App() {
             {/* 2. Formulario */}
             <AddTodoForm onAddTodo={handleAdd} />
 
+            <hr className="my-4" />
+          
+            {/* Criterio 1: Campo de búsqueda visible */}
+            <SearchBar 
+              searchTerm={searchTerm} 
+              onSearchChange={setSearchTerm} // Conecta el input al setSearchTerm del hook
+            />
+
+            {/* Criterio 4: Mensaje de no coincidencias */}
+            {filteredTodos.length === 0 && searchTerm.trim() !== '' && (
+                <div className="alert alert-info mt-3" role="alert">
+                    No se encontraron tareas con el título "{searchTerm}".
+                </div>
+            )}
+
             {editingTodo && (
               <EditTodoModal
                 todo={editingTodo}
@@ -57,13 +73,15 @@ function App() {
               />
             )}
 
-            {/* 3. Lista de Tareas */}
-            <TodoList 
-              todos={todos} 
-              onToggleComplete={toggleTodo}
-              onDelete={deleteTodo}
-              onEdit={setEditingTodo}
-            />
+            {(filteredTodos.length > 0 || searchTerm.trim() === '') && (
+                <TodoList 
+                    todos={filteredTodos} 
+                    onToggleComplete={toggleTodo}
+                    onDelete={deleteTodo}
+                    onEdit={setEditingTodo}
+                />
+            )}
+            
           </div>
         </main>
       </>
