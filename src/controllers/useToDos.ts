@@ -7,14 +7,12 @@ export const useTodos = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // --- 1. LECTURA (R: Read) ---
-    // Este useEffect se encarga de la carga inicial (fetchTodos)
+    // --- 1. LECTURA ---
     useEffect(() => {
         const loadData = async () => {
         try {
             setError(null);
             setIsLoading(true);
-            // Llama al servicio para obtener los datos
             const initialTodos = await fetchTodos();
             setTodos(initialTodos);
         } catch (e) {
@@ -28,37 +26,36 @@ export const useTodos = () => {
         loadData();
     }, []);
 
-    // --- 2. PERSISTENCIA (PUT para guardar) ---
+    // --- 2. PERSISTENCIA  ---
     useEffect(() => {
         if (!isLoading) {
-        const delaySave = setTimeout(async () => {
-            try {
-                setError(null); 
-                await saveTodos(todos); 
-            } catch (e) {
-                const errorMessage = e instanceof Error ? e.message : "Error desconocido de persistencia.";
-                setError(errorMessage); 
-            }
-        }, 500); 
+            const delaySave = setTimeout(async () => {
+                try {
+                    setError(null); 
+                    await saveTodos(todos); 
+                } catch (e) {
+                    const errorMessage = e instanceof Error ? e.message : "Error desconocido de persistencia.";
+                    setError(errorMessage); 
+                }
+            }, 500); 
 
         return () => clearTimeout(delaySave);
         }
     }, [todos, isLoading]);
 
 
-    // --- 3. CREACIÓN (C: Create) ---
+    // --- 3. CREACIÓN ---
     const addTodo = (title: string, description: string): void => {
         const newTodo: Todo = {
-        title, 
-        description,
-        completed: false,
+            title, 
+            description,
+            completed: false,
         };
-        // 1. Actualiza el estado de React
         setTodos((prev) => [...prev, newTodo]);
-        // 2. El useEffect de persistencia se encarga de llamar a saveTodos.
+        setError(null);
     };
 
-    // --- 4. ACTUALIZACIÓN (U: Update - Toggle Complete) ---
+    // --- 4. ACTUALIZACIÓN  ---
     const updateTodo = (originalTitle: string, newTitle: string, newDescription: string): void => {
         setTodos((prev) =>
             prev.map((todo) => {
@@ -75,16 +72,14 @@ export const useTodos = () => {
     };
 
     const toggleTodo = (title: string): void => {
-        // 1. Actualiza el estado de React
         setTodos((prev) =>
-        prev.map((todo) =>
-            todo.title === title ? { ...todo, completed: !todo.completed } : todo
-        )
+            prev.map((todo) =>
+                todo.title === title ? { ...todo, completed: !todo.completed } : todo
+            )
         );
-        // 2. El useEffect de persistencia se encarga de llamar a saveTodos.
     };
 
-    // --- 5. ELIMINACIÓN (D: Delete) ---
+    // --- 5. ELIMINACIÓN  ---
     const deleteTodo = (title: string): void => {
         setTodos((prev) => prev.filter((todo) => todo.title !== title));
     };

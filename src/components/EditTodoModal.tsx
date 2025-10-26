@@ -20,7 +20,6 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({ todo, onClose, onSave }) 
         e.preventDefault();
         const validationErrors = validateTodoInput(newTitle, description);
         if (validationErrors) {
-          // Si hay errores, los guardamos y detenemos
           setErrors(validationErrors);
           return;
         }

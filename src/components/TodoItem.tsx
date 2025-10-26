@@ -16,19 +16,19 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, onEdit })
       <input 
         type="checkbox" 
         checked={todo.completed}
-        onChange={onToggle} // Llama a la función pasada
+        onChange={onToggle}
       />
     </td>
     <td className="text-right">
       <button 
         className="btn btn-primary mb-1"
-        onClick={onEdit} // <--- ¡LLAMAR AQUI!
+        onClick={onEdit} 
         >
         <i className="fa fa-pencil"></i>
       </button>
       <button 
         className="btn btn-danger mb-1 ml-1"
-        onClick={onDelete} // Llama a la función pasada
+        onClick={onDelete} 
       >
         <i className="fa fa-trash"></i>
       </button>

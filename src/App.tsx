@@ -23,13 +23,13 @@ function App() {
   }, [error]);
 
   const handleAdd = (title: string, description: string) => {
-      addTodo(title, description); 
+    console.log("dembele");
+    addTodo(title, description); 
   };
 
   if (isLoading) {
     return <div>Cargando tareas...</div>;
   }
-
 
   // JSX
   return (
