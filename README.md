@@ -10,13 +10,13 @@
 ---
 
 ## Descripción del proyecto
-A través de estrategias de programación como el Pair Programming, se desarrolló un proyecto aplicando el concepto de Extream Programming (XP) para la construcción de una lista de tareas (TODO List) extrayendo los requerimientos necesarios del vídeo de Youtube: https://www.youtube.com/watch?v=a36jagJoDw8. En donde la práctica del Pair Programming se llevó acabo mediante una extensión de VSCode (Live Share) que permite a los usuarios modificar a la vez el archivo.
+Este proyecto consistió en el desarrollo de una aplicación ToDo List como parte de la práctica 3-1 de la materia de Ingeniería en Software. Inicialmente creada en JavaScript “puro”, fue posteriormente refactorizada a React con TypeScript, utilizando MVVM como patrón de arquitectura y desplegándola en la plataforma Render.
 
-Esta práctica abarca desde la planeación y el análisis de requisitos (identificados en el vídeo) hasta la presentación de la evidencia del desarrollo y las funcionalidades implementadas, concentrándose en las historias de usuario para crear y visualizar tareas.
+Durante el proceso, se aplicaron principios de Extreme Programming (XP), especialmente el Pair Programming, apoyado con la extensión Live Share de VSCode para el trabajo colaborativo en tiempo real. La práctica incluyó la extracción de requisitos a partir de un video base, la definición de historias de usuario, la implementación de validaciones, pruebas unitarias, y el uso de repositorios en GitHub para control de versiones.
 
 ---
 
 ## Objetivo
-
+Desplegar la aplicación en Render y documentar el proceso de desarrollo, desde la extracción de requisitos hasta la implementación de funcionalidades clave. Asimismo, se busca aplicar nuevas tecnologías como React, TypeScript y JsonBin.io, fomentando el trabajo colaborativo en equipo y el uso de buenas prácticas de programación, control de versiones y pruebas
 
 ---
