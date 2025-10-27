@@ -44,54 +44,56 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAddTodo }) => {
   };
  
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="row">
-              <div className="col-sm-3 d-sm-flex align-items-center">
-                <label className="m-sm-0">Title</label>
-                <input
-                  type="text"
-                  id="title"
-                  className="form-control ml-sm-2"
-                  placeholder="Learn JS"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  maxLength={50}
-                />
-                {errors?.titleError && <small className="text-danger ml-sm-2">{errors.titleError}</small>}
-              </div>
+    <form onSubmit={handleSubmit} className="task-form-container p-3 p-md-4 rounded shadow-sm">
+      <div className="row g-3"> 
+        
+        <div className="col-lg-3 col-md-5 col-sm-6 d-flex flex-column task-input-group">
+          <label className="mb-1 text-light">Title</label>
+          <input
+            type="text"
+            id="title"
+            className="form-control"
+            placeholder="Learn JS"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={50}
+          />
+          {errors?.titleError && <small className="text-danger mt-1">{errors.titleError}</small>}
+        </div>
 
-              <div className="px-sm-2 col-sm-7 d-sm-flex align-items-center mt-2 mt-sm-0">
-                <label className="m-sm-0">Description</label>
-                <input
-                  type="text"
-                  id="description"
-                  className="form-control ml-sm-2"
-                  placeholder="Watch JS Tutorials"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  maxLength={200}
-                />
-                {errors?.descriptionError && <small className="text-danger ml-sm-2">{errors.descriptionError}</small>}
-              </div>
+        <div className="col-12 col-lg-7 col-md-7 d-flex flex-column task-input-group">
+          <label className="mb-1 text-light">Description</label>
+          <input
+            type="text"
+            id="description"
+            className="form-control" 
+            placeholder="Watch JS Tutorials"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={200}
+          />
+          {errors?.descriptionError && <small className="text-danger mt-1">{errors.descriptionError}</small>}
+        </div>
 
-              <div className="col-sm-3 d-sm-flex align-items-center mt-2 mt-sm-0">
-                <label htmlFor="dueDate" className="m-sm-0">Due Date</label>
-                <input
-                  type="date"
-                  id="dueDate"
-                  className="form-control ml-sm-2"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  min={minDate} // Impide seleccionar visualmente fechas pasadas
-                />
-              </div>
+        <div className="col-lg-3 col-md-5 col-sm-6 d-flex flex-column task-input-group">
+          <label htmlFor="dueDate" className="mb-1 text-light">Due Date</label>
+          <input
+            type="date"
+            id="dueDate"
+            className="form-control" 
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            min={minDate}
+          />
+        </div>
 
-              <div className="col-sm-2 d-sm-flex justify-content-end mt-4 mt-sm-0">
-                <button type="submit" className="btn btn-info btn-block" id="add">
-                  Add
-                </button>
-              </div>
-            </div>
+        <div className="col-lg-2 col-md-3 col-sm-4 d-flex align-items-end">
+          <button type="submit" className="btn btn-primary task-btn-add w-100" id="add">
+            Add
+          </button>
+        </div>
+
+      </div>
     </form>
   );
 };

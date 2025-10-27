@@ -1,3 +1,11 @@
+:root {
+  --primary-color: #007bff; 
+  --text-light: #f8f9fa;
+  --bg-dark: #212529; 
+  --input-bg-dark: #343a40;
+  --border-color: #495057;
+}
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -173,4 +181,59 @@ body {
     margin-bottom: 5px;
     display: block;
     color: #555;
+}
+
+
+
+.task-form-container {
+  background-color: var(--bg-dark);
+  border-radius: 8px; 
+}
+
+.task-input-group label {
+  font-weight: 600; 
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.task-form-container .form-control {
+  background-color: var(--input-bg-dark);
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px; 
+  padding: 0.5rem 0.75rem; 
+  box-shadow: none; 
+  transition: border-color 0.2s, box-shadow 0.2s; 
+}
+
+
+.task-form-container .form-control:focus {
+  background-color: var(--input-bg-dark);
+  color: var(--text-light);
+  border-color: var(--primary-color); 
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); 
+}
+
+.task-form-container .form-control::placeholder {
+  color: #adb5bd; 
+  opacity: 1;
+}
+
+.task-btn-add {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1rem; 
+  border-radius: 6px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.task-btn-add:hover {
+  background-color: #0056b3 !important; 
+  transform: translateY(-1px); 
+}
+
+.task-input-group label {
+    margin-top: 8px;
 }
