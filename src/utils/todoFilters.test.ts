@@ -10,8 +10,6 @@ const mockTodos: Todo[] = [
     { title: 'React Native Project', description: 'App móvil', completed: false, dueDate: '2025-12-01' },
 ];
 
-type FilterStatus = 'all' | 'pending' | 'completed';
-
 describe('filterTodosByTitle (Lógica Pura de Filtrado por Título)', () => {
 
     it('debería retornar una lista filtrada por una palabra clave (ROJO 🔴)', () => {

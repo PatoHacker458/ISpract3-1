@@ -11,7 +11,7 @@ import SearchBar from './components/SearchBar';
 import StatusButton from './components/StatusButton';
 
 function App() {
-  const { todos, addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error, searchTerm, setSearchTerm, filteredTodos,filterStatus, setFilterStatus } = useTodos();
+  const { addTodo, updateTodo, toggleTodo, deleteTodo, isLoading, error, searchTerm, setSearchTerm, filteredTodos,filterStatus, setFilterStatus } = useTodos();
   const [popup, setPopup] = useState<PopupInfo | null>(null); 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
