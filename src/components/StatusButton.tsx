@@ -17,7 +17,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({
 }) => {
     
     const isActive = filterStatus === status;
-    let baseClasses = 'px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 shadow-md transform hover:scale-[1.01]';
+    let baseClasses = 'px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 shadow-md transform hover:scale-[1.01] searchArgs';
     let activeClasses = '';
     
     if (status === 'all') {

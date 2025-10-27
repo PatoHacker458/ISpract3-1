@@ -219,9 +219,10 @@ body {
   opacity: 1;
 }
 
-.task-btn-add {
+.task-btn-add, .searchArgs{
   background-color: var(--primary-color) !important;
   border-color: var(--primary-color) !important;
+  color: white !important;
   font-weight: 600;
   font-size: 1rem;
   padding: 0.5rem 1rem; 
@@ -229,11 +230,15 @@ body {
   transition: background-color 0.2s, transform 0.1s;
 }
 
-.task-btn-add:hover {
+.task-btn-add:hover, .searchArgs:hover{
   background-color: #0056b3 !important; 
   transform: translateY(-1px); 
 }
 
 .task-input-group label {
     margin-top: 8px;
+}
+
+.searchArgs{
+    margin: 5px;
 }
